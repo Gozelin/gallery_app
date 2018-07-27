@@ -1,15 +1,20 @@
 <?php
 
 include ("JsonHelper.Class.php");
+include ("Image.Class.php");
 
 function buildGallery($edit = 0) {
+	$order = 1;
+	if ($edit)
+		echo "<div id='galleryEdit-form'></div>";
+	echo "<div id='galleryWrapper'>";
+	if ($edit) {
+		$g = new cGallery(["name"=>"add"]);
+		$g->build(-1, $edit);
+	}
 	$gallery = new cGallery();
 	$garr = $gallery->fetchAll();
 	if (is_array($garr)) {
-		if ($edit)
-			echo "<div id='galleryEdit-form'></div>";
-		echo "<div id='galleryWrapper'>";
-		$order = 1;
 		foreach ($garr as $g) {
 			echo $g->build($order, $edit);
 			$order++;
@@ -77,10 +82,11 @@ class cGallery extends cJsonHelper {
 	public function __construct($details = NULL) {
 		if($details != NULL)
 		{
-			if (cJsonHelper::isJson($details)) {
-				echo ("param is json");
+			if (cJsonHelper::isJson($details)) {			//JSON
+				$this->impJson($details, get_class($this));
+			} else if (is_int($details)) {					//ID
 				$this->importJson($details);
-			} else if (is_array($details)) {
+			} else if (is_array($details)) {				//ARRAY
 				foreach($details as $key => $detail)
 				{
 					switch(strtolower($key))
@@ -110,19 +116,32 @@ class cGallery extends cJsonHelper {
 	*/
 
 	public function build($order = NULL, $edit = false) {
-		if ($edit)
+		$image = isset($this->_image[$this->_coverImage]) ? $this->_image[$this->_coverImage]->getPath() : "image/default.png";
+		if ($edit) {
 			$edit = "<div class='galleryEdit-btn'>
 						<h3>EDIT</h3>
 					</div>";
+		} else {
+			$edit = "";
+		}
 		$order = ($this->_order === NULL) ? $order : $this->_order; 
 		$str = "<div id='g".$this->_jsonId."' class='galleryBox' style='order:".$order."'>
 					<div class='galleryDisplay'>
-						<img width='150px' height='150px' src=".$this->_image[$this->_coverImage]->getPath().">
+						<img width='150px' height='150px' src=".$image.">
 						<h3>".$this->_name."</h3>
 						".$edit."
 					</div>
 				</div>";
-		return ($str);
+		echo $str;
+	}
+
+	public function getForm() { 
+		$str = "<form id='galleryForm' name='data'>
+					<input name='name' type='text' placeholder='titre' value='".$this->_name."'>
+					<input name='desc' type='text' placeholder='description' value='".$this->_desc."'>
+					<div id='galleryForm-submit'><h3>SUBMIT<h3></div>
+				</form";
+		echo $str;
 	}
 }
 

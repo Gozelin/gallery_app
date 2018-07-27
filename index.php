@@ -1,9 +1,8 @@
 <?php
 
 include("./class/Gallery.Class.php");
-include("./class/Image.Class.php");
 
-cJsonHelper::$verbose = true;
+cJsonHelper::$verbose = false;
 
 $arr = ["name"=>"GALLERY_NAME", "desc"=>"GALLERY_DESC"];
 
@@ -32,7 +31,6 @@ $g->addImage($i);
 	</head>
 	<body>
 		<div id="galleryApp">
-			<?php buildGallery(1); ?>
 		</div>
 	</body>
 </html>

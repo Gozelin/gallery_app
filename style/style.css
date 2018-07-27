@@ -45,3 +45,26 @@ body {
 .galleryEdit-btn:hover h3{
     color: red;
 }
+
+#galleryEdit-form {
+    display: flex;
+}
+
+#galleryForm {
+    order: 9999;
+}
+
+#galleryForm-submit { 
+    background: orange;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+#galleryForm-submit:hover {
+    background: darkorange;
+}
+
+#galleryForm-submit h3 {
+    margin: 0;
+}

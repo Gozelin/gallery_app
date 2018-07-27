@@ -94,8 +94,8 @@ abstract class cJsonHelper {
 	public function insertJson() {
 		$json = $this->expJson();
 		if (!$this->prepareDb() || !$this->getFileContent()) {
-			file_put_contents($this->_path_db, json_encode([["id"=>0, "json"=>$json, "class"=>get_class($this)]]));
-			$this->_jsonId = 0;
+			file_put_contents($this->_path_db, json_encode([["id"=>1, "json"=>$json, "class"=>get_class($this)]]));
+			$this->_jsonId = 1;
 		} else {
 			if (is_array($this->_jsonFc)) {
 				$this->_jsonId = $this->getDispId();
