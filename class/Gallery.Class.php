@@ -3,7 +3,7 @@
 include ("JsonHelper.Class.php");
 include ("Image.Class.php");
 
-function buildGallery($edit = 0) {
+function buildApp($edit = 0) {
 	$order = 1;
 	if ($edit)
 		echo "<div id='galleryEdit-form'></div>";
@@ -82,11 +82,17 @@ class cGallery extends cJsonHelper {
 	public function __construct($details = NULL) {
 		if($details != NULL)
 		{
+			// echo "<br>CONSTRUCTOR CALLED<br>";
+			if (is_numeric($details))
+				$details = intval($details);
 			if (cJsonHelper::isJson($details)) {			//JSON
+				// echo "IS JSON";
 				$this->impJson($details, get_class($this));
 			} else if (is_int($details)) {					//ID
+				// echo "IS ID";
 				$this->importJson($details);
 			} else if (is_array($details)) {				//ARRAY
+				// echo "IS ARRAY";
 				foreach($details as $key => $detail)
 				{
 					switch(strtolower($key))
@@ -103,10 +109,10 @@ class cGallery extends cJsonHelper {
 						case "order":
 							$this->_order = $detail;
 							break;
+						case "id":
+							$this->_jsonId = intval($detail);
 					}
 				}
-			} else {
-				echo("bad parameters: send array or json string");
 			}
 		}
 	}
@@ -135,11 +141,12 @@ class cGallery extends cJsonHelper {
 		echo $str;
 	}
 
-	public function getForm() { 
+	public function getForm() {
 		$str = "<form id='galleryForm' name='data'>
 					<input name='name' type='text' placeholder='titre' value='".$this->_name."'>
 					<input name='desc' type='text' placeholder='description' value='".$this->_desc."'>
-					<div id='galleryForm-submit'><h3>SUBMIT<h3></div>
+					<div id='galleryForm-submit'><h3>SUBMIT</h3></div>
+					<div id='galleryForm-delete'><h1>X</h1></div>
 				</form";
 		echo $str;
 	}

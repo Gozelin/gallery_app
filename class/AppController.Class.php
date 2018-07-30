@@ -18,7 +18,7 @@ class cAppController {
     //object
     protected $_obj = NULL;
 
-    public function __construct($detail) {
+    public function __construct($detail = null) {
         if (!is_array($detail))
             return (0);
         $this->fetchAttr($detail);
@@ -30,23 +30,28 @@ class cAppController {
             if (property_exists($this, $attr))
                 $this->$attr = $value;
         }
-    }
+	}
+	
+	public function prepareQuery($arr) {
+		if (is_array($arr))
+			$this->fetchAttr($arr);
+	}
 
     public function execQuery() {
         if (isset($this->_class) && class_exists($this->_class)) {
             $ret = NULL;
-            $this->_obj = new $this->_class($this->_data);
+			$this->_obj = new $this->_class($this->_data);
             if (isset($this->_action)) {
                 if (method_exists($this->_obj, $this->_action)) {
                     $function = $this->_action;
                     $ret = $this->_obj->$function($this->_data);
                 }
-                if (function_exists($this->_action)) {
-                    $function($this->_data);
-                }
             }
             return ($ret);
-        }
+        } else if (isset($this->_action) && function_exists($this->_action)) {
+			$function = $this->_action;
+			$function($this->_data);
+		}
     } 
 }
 

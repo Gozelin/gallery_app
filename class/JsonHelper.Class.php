@@ -23,6 +23,7 @@ abstract class cJsonHelper {
 	*/
 
 	public function getJsonId() { return ($this->_jsonId); }
+	public function setJsonId($value) { $this->_jsonId = $value; }
 
 	/*
 	MISC FUNCTION
@@ -174,11 +175,17 @@ abstract class cJsonHelper {
 	}
 
 	//import the object's data from a JSON file
-	private function impJson($json, $class) {
+	public function impJson($json, $class) {
 		$arr = json_decode($json, true);
 		if (is_array($arr)) {
 			foreach ($arr as $key => $attr) {
-				$this->$key = $this->impJson_parse($attr, $class);
+				$var = "";
+				if (property_exists($this, $key))
+					$var = $key;
+				else if (property_exists($this, "_".$key))
+					$var = "_".$key;
+				if ($var)
+					$this->$var = $this->impJson_parse($attr, $class);
 			}
 		}
 	}
@@ -225,7 +232,7 @@ abstract class cJsonHelper {
 		if (is_array($this->_jsonFc)) {
 			$found = false;
 			foreach ($this->_jsonFc as $key => $fc) {
-				if (isset($fc["id"]) && $fc["id"] == $this->_jsonId) {
+				if (isset($this->_jsonFc[$key]["id"]) && $this->_jsonFc[$key]["id"] == $this->_jsonId) {
 					$this->_jsonFc[$key]["json"] = $this->expJson();
 					$found = true;
 				}
@@ -247,9 +254,16 @@ abstract class cJsonHelper {
 		if (!$this->prepareDb() || !$this->getFileContent()) {
 			return (false);
 		}
-		if (is_array($this->_jsonFc) && isset($this->_jsonFc[$this->_jsonId])) {
-			unset($this->_jsonFc[$this->_jsonId]);
-			file_put_contents($this->_path_db, json_encode($this->_jsonFc));
+		echo '<pre>';
+		var_dump($this->_jsonFc);
+		echo '</pre>';
+		if (is_array($this->_jsonFc)) {
+			foreach ($this->_jsonFc as $key => $value) {
+				if (isset($this->_jsonFc[$key]["id"]) && $this->_jsonFc[$key]["id"] == $this->_jsonId) {
+					unset($this->_jsonFc[$key]);
+					file_put_contents($this->_path_db, json_encode($this->_jsonFc));
+				}
+			}
 		}
 		$this->clearDump();
 	}

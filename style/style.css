@@ -68,3 +68,18 @@ body {
 #galleryForm-submit h3 {
     margin: 0;
 }
+
+#galleryForm-delete {
+    background: orange;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+#galleryForm-delete:hover {
+    background: darkorange;
+}
+
+#galleryForm-delete h1 {
+    margin: 0;
+}

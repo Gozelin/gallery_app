@@ -2,24 +2,7 @@
 
 include("./class/Gallery.Class.php");
 
-cJsonHelper::$verbose = false;
-
-$arr = ["name"=>"GALLERY_NAME", "desc"=>"GALLERY_DESC"];
-
-$g = new cGallery($arr);
-
-$arr= ["name"=>"IMAGE_NAME", "desc"=>"IMAGE_DESC", "path"=>"/images/this.png"];
-
-$i = new cImage($arr);
-
-$g->addImage($i);
-
-// $g->importJson(2);
-// $g->insertJson();
-
-// echo('<pre>');
-// var_dump($g);
-// echo('</pre>');
+cJsonHelper::$verbose = true;
 
 ?>
 
