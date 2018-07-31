@@ -82,17 +82,15 @@ class cGallery extends cJsonHelper {
 	public function __construct($details = NULL) {
 		if($details != NULL)
 		{
-			// echo "<br>CONSTRUCTOR CALLED<br>";
 			if (is_numeric($details))
 				$details = intval($details);
-			if (cJsonHelper::isJson($details)) {			//JSON
-				// echo "IS JSON";
-				$this->impJson($details, get_class($this));
-			} else if (is_int($details)) {					//ID
-				// echo "IS ID";
+			if (cJsonHelper::isJson($details)) {
+				$details = json_decode($details, true);
+			}
+			if (is_numeric($details)) {
 				$this->importJson($details);
-			} else if (is_array($details)) {				//ARRAY
-				// echo "IS ARRAY";
+			}
+			if (is_array($details)) {
 				foreach($details as $key => $detail)
 				{
 					switch(strtolower($key))
@@ -111,6 +109,7 @@ class cGallery extends cJsonHelper {
 							break;
 						case "id":
 							$this->_jsonId = intval($detail);
+							break;
 					}
 				}
 			}
@@ -142,12 +141,16 @@ class cGallery extends cJsonHelper {
 	}
 
 	public function getForm() {
-		$str = "<form id='galleryForm' name='data'>
+		$str = "<div id='galleryForm'>";
+		$str .= "<form id='gDataForm' class='regForm'>
 					<input name='name' type='text' placeholder='titre' value='".$this->_name."'>
 					<input name='desc' type='text' placeholder='description' value='".$this->_desc."'>
-					<div id='galleryForm-submit'><h3>SUBMIT</h3></div>
-					<div id='galleryForm-delete'><h1>X</h1></div>
-				</form";
+				</form>";
+		$str .= "<form id='gFileForm' class='fileForm'>
+					<input name='image' type='file'>
+				</form>";
+		$str .= "<div id='galleryForm-btn'><h3>SUBMIT</h3></div>
+				<div id='galleryForm-del'><h1>X</h1></div></div>";
 		echo $str;
 	}
 }

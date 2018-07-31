@@ -19,4 +19,6 @@ $AC = new cAppController();
 $AC->prepareQuery($_POST);
 $AC->execQuery();
 
+// var_dump($AC);
+
 ?>

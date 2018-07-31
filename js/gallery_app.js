@@ -7,25 +7,27 @@ $(document).ready(function(){
         e = $(this).parent().parent(".GalleryBox");
         toggleEditPanel(e);
     });
-    $(document).on('click', '#galleryForm-submit', function(){
+    $(document).on('click', '#galleryForm-btn', function(){
 		var _action = "";
 		var _data = "";
-        id = $(this).parent().siblings(".galleryBox").attr("id");
+		var _file = null;
+		id = $(this).parent().siblings(".galleryBox").attr("id");
+		_data = getForm(document.getElementById("gDataForm"));
+		_file = getForm(document.getElementById("gFileForm"));
         if (id == "g") {
 			_action = "insertJson";
-			_data = parseForm(document.getElementById("galleryForm"));
 		} else if (id != null) {
 			_action = "updateJson";
-			_data = parseForm(document.getElementById("galleryForm"));
 			_data["id"] = id.substr(1);
 		}
 		if (_data != null)
 			JSON.stringify(_data);
-		queryApp({action:_action, data:_data, class:"cGallery"}, function (data){
+		queryApp({action:_action, data:_data, class:"cGallery", file:_file}, function (data){
+			// console.log(data);
 			buildApp(data);
 		});
 	});
-	$(document).on('click', '#galleryForm-delete', function(){
+	$(document).on('click', '#galleryForm-del', function(){
 		id = $(this).parent().siblings(".galleryBox").attr("id").substr(1);
 		queryApp({action:"deleteJson", data:id, class:"cGallery"}, function (data){
 			buildApp(data);
@@ -39,48 +41,66 @@ function buildApp(a = null) {
 	});
 }
 
-function parseForm(form) {
-	arr = {};
-	$(form).children("input").each(function(){
-		arr[$(this).attr("name")] = $(this).val();
-	});
-    // var formElem = document.getElementById("galleryForm");
-	// var formData = new FormData(formElem);
-	return (arr);
+function getForm(form) {
+	if ($(form).attr("class") == "fileForm") {
+		formData = new FormData(form);
+		return (formData);
+	} else if ($(form).attr("class") == "regForm") {
+		arr = {};
+		$(form).children("input").each(function(){
+			arr[$(this).attr("name")] = $(this).val();
+		});
+		return (arr);
+	}
 }
 
 function queryApp(arr, callback = console.log()) {
-	// console.log(arr);
-	_contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
-	opt = true;
 	if (typeof arr == "object") {
 		if (!("action" in arr))
 			arr["action"] = null;
 		if (!("class" in arr))
 			arr["class"] = null;
-		if (!("data" in arr)) {
+		if (!("data" in arr))
 			arr["data"] = null;
+		if (("file" in arr) && arr["file"] instanceof FormData) {
+			sendForm(arr, callback);
+		} else {
+			req = $.ajax({
+				url: "src/AppAccessor.php",
+				method: "POST",
+				data: {action:arr["action"], class:arr["class"], data:arr["data"]},
+				dataType: "text",
+			});
+			req.done(function(data) {
+				if (typeof callback == "function")
+					callback(data);
+			});
 		}
-		if (arr["data"] instanceof FormData) {
-			_contentType = false;
-			opt = false;
-		}
-		req = $.ajax({
-			url: "src/AppAccessor.php",
-			method: "POST",
-			data: {action:arr["action"], class:arr["class"], data:arr["data"]},
-			dataType: "text",
-			contentType: _contentType,
-			processData: opt,
-			cache: opt
-		});
-		req.done(function(data) {
-			console.log(data);
-			if (typeof callback == "function")
-				callback(data);
-		}); 
 	}
 }
+
+function sendForm(arr, callback) {
+	if (("file" in arr) && (arr["file"] instanceof FormData)) {
+		var formData = arr["file"];
+		formData.append("class", arr["class"]);
+		formData.append("action", arr["action"]);
+		formData.append("data", JSON.stringify(arr["data"]));
+		var xhr = new XMLHttpRequest(),
+		method = "POST",
+		url = "src/AppAccessor.php";
+		xhr.open(method, url, true);
+		xhr.onreadystatechange = function () {
+			if(xhr.readyState === 4 && xhr.status === 200) {
+				callback(xhr.responseText);
+			}
+		};
+		xhr.send(formData);
+	}
+};
+
+/*
+ANIMATIONS
+*/
 
 function toggleEditPanel(e) {
     if ($("#galleryEdit-form").html() != "") {
@@ -128,25 +148,4 @@ function buildForm(e) {
 	queryApp({action:"getForm", class:"cGallery",data:_id}, function(data) {
 		$("#galleryEdit-form").append(data)
 	});
-}
-
-function sendForm(action) {
-    var formElem = document.getElementById("galleryForm");
-    var formData = new FormData(formElem);
-    formData.append("action", action);
-    id = parseInt($("#galleryEdit-form").children(".galleryBox").attr("id").substr(1));
-    formData.append("id", id);
-
-    var xhr = new XMLHttpRequest(),
-    method = "POST",
-    url = "src/classAccessor.php";
-
-    xhr.open(method, url, true);
-    xhr.onreadystatechange = function () {
-        if(xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
-            buildApp(edit_global);
-        }
-    };
-    xhr.send(formData);
 }

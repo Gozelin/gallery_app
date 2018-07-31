@@ -232,7 +232,7 @@ abstract class cJsonHelper {
 		if (is_array($this->_jsonFc)) {
 			$found = false;
 			foreach ($this->_jsonFc as $key => $fc) {
-				if (isset($this->_jsonFc[$key]["id"]) && $this->_jsonFc[$key]["id"] == $this->_jsonId) {
+				if ((isset($this->_jsonFc[$key]["id"]) && $this->_jsonFc[$key]["id"] === $this->_jsonId)) {
 					$this->_jsonFc[$key]["json"] = $this->expJson();
 					$found = true;
 				}
@@ -254,9 +254,6 @@ abstract class cJsonHelper {
 		if (!$this->prepareDb() || !$this->getFileContent()) {
 			return (false);
 		}
-		echo '<pre>';
-		var_dump($this->_jsonFc);
-		echo '</pre>';
 		if (is_array($this->_jsonFc)) {
 			foreach ($this->_jsonFc as $key => $value) {
 				if (isset($this->_jsonFc[$key]["id"]) && $this->_jsonFc[$key]["id"] == $this->_jsonId) {

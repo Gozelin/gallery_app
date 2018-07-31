@@ -52,34 +52,36 @@ body {
 
 #galleryForm {
     order: 9999;
+    display: flex;
+    flex-direction: column;
 }
 
-#galleryForm-submit { 
+#galleryForm-btn { 
     background: orange;
     cursor: pointer;
     display: flex;
     justify-content: center;
 }
 
-#galleryForm-submit:hover {
+#galleryForm-btn:hover {
     background: darkorange;
 }
 
-#galleryForm-submit h3 {
+#galleryForm-btn h3 {
     margin: 0;
 }
 
-#galleryForm-delete {
+#galleryForm-del {
     background: orange;
     cursor: pointer;
     display: flex;
     justify-content: center;
 }
 
-#galleryForm-delete:hover {
+#galleryForm-del:hover {
     background: darkorange;
 }
 
-#galleryForm-delete h1 {
+#galleryForm-del h1 {
     margin: 0;
 }

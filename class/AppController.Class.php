@@ -12,7 +12,7 @@ class cAppController {
     //string
     protected $_class = NULL;
 
-    //whatever (array, int, json, regular string, objects) || id
+    //array or json
     protected $_data = NULL;
 
     //object
@@ -34,13 +34,16 @@ class cAppController {
 	
 	public function prepareQuery($arr) {
 		if (is_array($arr))
-			$this->fetchAttr($arr);
+            $this->fetchAttr($arr);
+        else if (cJsonHelper::isJson($arr)) {
+            $this->fetchAttr(json_decode($arr));
+        }
 	}
 
     public function execQuery() {
         if (isset($this->_class) && class_exists($this->_class)) {
             $ret = NULL;
-			$this->_obj = new $this->_class($this->_data);
+            $this->_obj = new $this->_class($this->_data);
             if (isset($this->_action)) {
                 if (method_exists($this->_obj, $this->_action)) {
                     $function = $this->_action;
