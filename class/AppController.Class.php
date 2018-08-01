@@ -38,7 +38,23 @@ class cAppController {
         else if (cJsonHelper::isJson($arr)) {
             $this->fetchAttr(json_decode($arr));
         }
-	}
+    }
+    
+    public function prepareData($arr) {
+        if (isset($arr["data"])) {
+            $arr["data"] = json_decode($arr["data"], true);
+            if (is_array($arr["data"])) {
+                foreach ($arr["data"] as $key => $value) {
+                    $str = explode("-", $key);
+                    if (isset($str[1])) {
+                        echo $str[1]."\n";
+                        $arr["data"][$key]["path"] = $_FILES["cImage-".$str[1]]["tmp_name"];//à generalisé
+                    }
+                }
+            }
+        }
+        return ($arr);
+    }
 
     public function execQuery() {
         if (isset($this->_class) && class_exists($this->_class)) {
@@ -55,7 +71,7 @@ class cAppController {
 			$function = $this->_action;
 			$function($this->_data);
 		}
-    } 
+    }
 }
 
 ?>

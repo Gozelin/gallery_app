@@ -54,6 +54,25 @@ class cImage extends cJsonHelper {
 			}
 		}
 	}
+
+	/*
+	PUBLIC FUNCTIONS
+	*/
+
+	public function getDataForm($e = 0) {
+		if (!$e) {
+			$str = "<input name='cImage-".$this->_jsonId."' class='imgFileInput' type='file'>";
+		} else {
+			$str = "<div class='file-".$this->_jsonId."'>
+						<input type='text' name='name' value='".$this->_name."'>
+						<input type='text' name='desc' value='".$this->_desc."'>
+						<input type='hidden' name='id' value='".$this->_jsonId."'>
+						<input type='hidden' name='class' value='cImage'>
+					</div>";
+		}
+		return ($str);
+	}
+
 }
 
 ?>

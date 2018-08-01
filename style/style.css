@@ -85,3 +85,11 @@ body {
 #galleryForm-del h1 {
     margin: 0;
 }
+
+.imgFileInput {
+    background: lightcoral;
+}
+
+.imgDataForm {
+    background: khaki;
+}

@@ -3,26 +3,6 @@
 include ("JsonHelper.Class.php");
 include ("Image.Class.php");
 
-function buildApp($edit = 0) {
-	$order = 1;
-	if ($edit)
-		echo "<div id='galleryEdit-form'></div>";
-	echo "<div id='galleryWrapper'>";
-	if ($edit) {
-		$g = new cGallery(["name"=>"add"]);
-		$g->build(-1, $edit);
-	}
-	$gallery = new cGallery();
-	$garr = $gallery->fetchAll();
-	if (is_array($garr)) {
-		foreach ($garr as $g) {
-			echo $g->build($order, $edit);
-			$order++;
-		}
-		echo "</div>";
-	}
-}
-
 class cGallery extends cJsonHelper {
 
 	/*
@@ -145,13 +125,45 @@ class cGallery extends cJsonHelper {
 		$str .= "<form id='gDataForm' class='regForm'>
 					<input name='name' type='text' placeholder='titre' value='".$this->_name."'>
 					<input name='desc' type='text' placeholder='description' value='".$this->_desc."'>
+					".$this->getImageForm(1)."
 				</form>";
 		$str .= "<form id='gFileForm' class='fileForm'>
-					<input name='image' type='file'>
+					".$this->getImageForm(0)."
 				</form>";
 		$str .= "<div id='galleryForm-btn'><h3>SUBMIT</h3></div>
 				<div id='galleryForm-del'><h1>X</h1></div></div>";
 		echo $str;
+	}
+
+	private function getImageForm($e = 0) {
+		$str = "<form class='imgForm'>";
+		foreach ($this->_image as $img) {
+			$str .= $img->getDataForm($e);
+		}
+		$i = new cImage();
+		$str .= $i->getDataForm($e); 
+		$str .= "</form>";
+		return $str;
+	}
+}
+
+function buildApp($edit = 0) {
+	$order = 1;
+	if ($edit)
+		echo "<div id='galleryEdit-form'></div>";
+	echo "<div id='galleryWrapper'>";
+	if ($edit) {
+		$g = new cGallery(["name"=>"add"]);
+		$g->build(-1, $edit);
+	}
+	$gallery = new cGallery();
+	$garr = $gallery->fetchAll();
+	if (is_array($garr)) {
+		foreach ($garr as $g) {
+			echo $g->build($order, $edit);
+			$order++;
+		}
+		echo "</div>";
 	}
 }
 

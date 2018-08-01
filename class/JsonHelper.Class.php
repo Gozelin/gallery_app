@@ -174,7 +174,7 @@ abstract class cJsonHelper {
 		$this->clearDump();
 	}
 
-	//import the object's data from a JSON file
+	//import the object's data from a JSON string
 	public function impJson($json, $class) {
 		$arr = json_decode($json, true);
 		if (is_array($arr)) {

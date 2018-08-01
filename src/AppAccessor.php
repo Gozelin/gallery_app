@@ -9,15 +9,19 @@ if (!isset($_POST)) {
 	exit(0);
 }
 
-// echo '<pre>';
-// var_dump($_POST);
-// var_dump($_FILES);
-// echo '</pre>';
-
 $AC = new cAppController();
 
-$AC->prepareQuery($_POST);
-$AC->execQuery();
+$data = $AC->prepareData($_POST);
+
+echo '<pre>';
+// var_dump($_POST);
+// var_dump($_FILES);
+// var_dump($data);
+echo '</pre>';
+
+$AC->prepareQuery($data);
+// if (!$_FILES)
+	$AC->execQuery();
 
 // var_dump($AC);
 

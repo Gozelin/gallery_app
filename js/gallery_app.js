@@ -22,8 +22,8 @@ $(document).ready(function(){
 		}
 		if (_data != null)
 			JSON.stringify(_data);
+		console.log(_data);
 		queryApp({action:_action, data:_data, class:"cGallery", file:_file}, function (data){
-			// console.log(data);
 			buildApp(data);
 		});
 	});
@@ -47,11 +47,23 @@ function getForm(form) {
 		return (formData);
 	} else if ($(form).attr("class") == "regForm") {
 		arr = {};
-		$(form).children("input").each(function(){
-			arr[$(this).attr("name")] = $(this).val();
-		});
+		arr = recurvGetForm(form, arr);
 		return (arr);
 	}
+}
+
+function recurvGetForm(form, arr) {
+	$(form).children().each(function(){
+		if ($(this).is("input")) {
+			// console.log($(this).attr("name"));
+			arr[$(this).attr("name")] = $(this).val();
+		} else {
+			// console.log($(this).attr("id"));
+			arr[$(this).attr("class")] = {};
+			arr[$(this).attr("class")] = recurvGetForm($(this), arr[$(this).attr("class")]);
+		}
+	});
+	return (arr);
 }
 
 function queryApp(arr, callback = console.log()) {
@@ -72,6 +84,7 @@ function queryApp(arr, callback = console.log()) {
 				dataType: "text",
 			});
 			req.done(function(data) {
+				console.log(data);
 				if (typeof callback == "function")
 					callback(data);
 			});
@@ -91,6 +104,7 @@ function sendForm(arr, callback) {
 		xhr.open(method, url, true);
 		xhr.onreadystatechange = function () {
 			if(xhr.readyState === 4 && xhr.status === 200) {
+				console.log(xhr.responseText);
 				callback(xhr.responseText);
 			}
 		};
