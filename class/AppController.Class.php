@@ -15,7 +15,7 @@ class cAppController {
     //array or json
     protected $_data = NULL;
 
-    //object
+    // object
     protected $_obj = NULL;
 
     public function __construct($detail = null) {
@@ -46,9 +46,12 @@ class cAppController {
             if (is_array($arr["data"])) {
                 foreach ($arr["data"] as $key => $value) {
                     $str = explode("-", $key);
-                    if (isset($str[1])) {
-                        echo $str[1]."\n";
-                        $arr["data"][$key]["path"] = $_FILES["cImage-".$str[1]]["tmp_name"];//à generalisé
+                    if (isset($str[1]) && $str[0] == "file") {
+                        $name = $_FILES[$arr["data"][$key]["class"]."-".$str[1]]["name"];
+                        $arr["data"][$arr["data"][$key]["attr"]] = $arr["data"][$key];
+                        $arr["data"][$arr["data"][$key]["attr"]]["path"] = $arr["data"][$key]["dir"].$name;
+                        move_uploaded_file($_FILES[$arr["data"][$key]["class"]."-".$str[1]]["tmp_name"], "../image/".$name);
+                        unset($arr["data"][$key]);
                     }
                 }
             }

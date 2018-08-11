@@ -59,18 +59,25 @@ class cImage extends cJsonHelper {
 	PUBLIC FUNCTIONS
 	*/
 
-	public function getDataForm($e = 0) {
+	public function getForm($e = 0, $id) {
 		if (!$e) {
-			$str = "<input name='cImage-".$this->_jsonId."' class='imgFileInput' type='file'>";
+			$str = "<input name='cImage-".$id."' class='imgFileInput' type='file'>";
 		} else {
-			$str = "<div class='file-".$this->_jsonId."'>
+			$str = "<div class='file-".$id."'>
 						<input type='text' name='name' value='".$this->_name."'>
 						<input type='text' name='desc' value='".$this->_desc."'>
-						<input type='hidden' name='id' value='".$this->_jsonId."'>
+						<input type='hidden' name='id' value='".$id."'>
 						<input type='hidden' name='class' value='cImage'>
+						<input type='hidden' name='attr' value='image'>
+						<input type='hidden' name='dir' value='/gallery_app/image/'>
 					</div>";
 		}
 		return ($str);
+	}
+
+	public function delete() {
+		unlink("../image/".explode("/", $this->_path)[3]);
+		$this->deleteJson();
 	}
 
 }

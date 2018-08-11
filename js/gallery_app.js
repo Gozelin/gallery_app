@@ -1,6 +1,10 @@
 
 var edit_global = 1;
 
+/*
+TRIGGER
+*/
+
 $(document).ready(function(){
 	buildApp();
     $(document).on("click", ".galleryEdit-btn", function(){
@@ -14,7 +18,7 @@ $(document).ready(function(){
 		id = $(this).parent().siblings(".galleryBox").attr("id");
 		_data = getForm(document.getElementById("gDataForm"));
 		_file = getForm(document.getElementById("gFileForm"));
-        if (id == "g") {
+        if (id == "g0") {
 			_action = "insertJson";
 		} else if (id != null) {
 			_action = "updateJson";
@@ -22,18 +26,22 @@ $(document).ready(function(){
 		}
 		if (_data != null)
 			JSON.stringify(_data);
-		console.log(_data);
+		// console.log(_data);
 		queryApp({action:_action, data:_data, class:"cGallery", file:_file}, function (data){
 			buildApp(data);
 		});
 	});
 	$(document).on('click', '#galleryForm-del', function(){
 		id = $(this).parent().siblings(".galleryBox").attr("id").substr(1);
-		queryApp({action:"deleteJson", data:id, class:"cGallery"}, function (data){
+		queryApp({action:"delete", data:id, class:"cGallery"}, function (data){
 			buildApp(data);
 		});
 	});
 });
+
+/*
+APP FUNCTIONS
+*/
 
 function buildApp(a = null) {
 	queryApp({action:"buildApp","data":edit_global}, function(data){
@@ -84,7 +92,7 @@ function queryApp(arr, callback = console.log()) {
 				dataType: "text",
 			});
 			req.done(function(data) {
-				console.log(data);
+				// console.log(data);
 				if (typeof callback == "function")
 					callback(data);
 			});
@@ -138,12 +146,14 @@ function closeEditPanel(e) {
         $("#galleryWrapper").css("position", "");
     });
     $("#galleryForm").remove();
+    // $("#galleryEdit-form").hide();
     $("#galleryWrapper").prepend(e);
 }
 
 function openEditPanel(e) {
     e.css("display", "none");
     e.css("opacity", "0");
+    // $("#galleryEdit-form").display();
     $("#galleryEdit-form").prepend(e);
     $("#galleryWrapper").css("position", "absolute");
     $("#galleryWrapper").animate({

@@ -8,7 +8,7 @@ abstract class cJsonHelper {
 
 	//int
 	//id of the object in db file
-	protected $_jsonId = NULL;
+	protected $_jsonId = 0;
 
 	//string
 	//a buffer for fc (file content)
@@ -26,7 +26,7 @@ abstract class cJsonHelper {
 	public function setJsonId($value) { $this->_jsonId = $value; }
 
 	/*
-	MISC FUNCTION
+	MISC FUNCTIONS
 	*/
 
 	private function log($str, $code = 0) {
@@ -75,16 +75,20 @@ abstract class cJsonHelper {
 		return (true);
 	}
 
+	private function clearDump() {
+		unset($this->_jsonFc);
+		$this->_jsonFc = NULL;
+	}
+
+	/*
+	STATIC
+	*/
+
 	static function isJson($string) {
 		if (!is_string($string))
 			return (0);
 		json_decode($string);
 		return (json_last_error() == JSON_ERROR_NONE);
-	}
-
-	private function clearDump() {
-		unset($this->_jsonFc);
-		$this->_jsonFc = NULL;
 	}
 
 	/*

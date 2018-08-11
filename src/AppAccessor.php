@@ -19,9 +19,11 @@ echo '<pre>';
 // var_dump($data);
 echo '</pre>';
 
+
+// $gallery = new cGallery(data); 
+
 $AC->prepareQuery($data);
-// if (!$_FILES)
-	$AC->execQuery();
+$AC->execQuery();
 
 // var_dump($AC);
 

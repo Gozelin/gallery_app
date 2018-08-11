@@ -1,4 +1,12 @@
 <?php
+	// echo exec('whoami');
+	// echo exec("chown www-data /image/");
+	// echo exec("chmod 755 /image/");
+?>
+
+<?php
+
+
 
 include("./class/Gallery.Class.php");
 

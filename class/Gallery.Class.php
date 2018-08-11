@@ -82,7 +82,7 @@ class cGallery extends cJsonHelper {
 							$this->_desc = $detail;
 							break;
 						case "image":
-							$this->_image = $detail;
+							$this->importImage($detail);
 							break;
 						case "order":
 							$this->_order = $detail;
@@ -137,13 +137,31 @@ class cGallery extends cJsonHelper {
 
 	private function getImageForm($e = 0) {
 		$str = "<form class='imgForm'>";
+		$appId = 0;
 		foreach ($this->_image as $img) {
-			$str .= $img->getDataForm($e);
+			$str .= $img->getForm($e, $appId++);
 		}
 		$i = new cImage();
-		$str .= $i->getDataForm($e); 
+		$str .= $i->getForm($e, 0); 
 		$str .= "</form>";
 		return $str;
+	}
+
+	private function importImage($data) {
+
+		if (is_array($data)) {
+			$img = new cImage($data);
+			$this->addImage($img);
+		}
+	}
+
+	public function delete() {
+		if (is_array($this->_image)) {
+			foreach ($this->_image as $img) {
+				$img->delete();
+			}
+		}
+		$this->deleteJson();
 	}
 }
 
